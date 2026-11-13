@@ -2,7 +2,7 @@
 #Parametros ejercicios:
 
 
-decrem.renuncia <- 3%
+decrem.renuncia <- 0.03
 
 prima <- 50000
 

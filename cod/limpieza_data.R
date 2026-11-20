@@ -1,7 +1,5 @@
-library(readxl)
-library(dplyr)
-library(magrittr)
-library(lubridate)
+
+
 
 activos <- read_excel("data/Población CA-0309.xlsx", 
                                 sheet = "Activos", 
@@ -81,4 +79,8 @@ inactivos <- read_excel("data/Población CA-0309.xlsx",
 inactivos %>% 
   filter(`Id Asociado` %in% activos.dep$`Id Asociado`) %>%
   nrow() #No hay coincidencias
+
+
+
+
 

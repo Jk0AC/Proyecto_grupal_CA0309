@@ -1,0 +1,7 @@
+"verificacion","resultado"
+"N0 = suma por edad y sexo",TRUE
+"p + qd + qr = 1",TRUE
+"Activos inicio = salidas + activos fin (cohorte-año)",TRUE
+"Activos inicio año t = activos fin año t-1",TRUE
+"N0 = activos fin 5 + fallecidos acum. + renuncias acum.",TRUE
+"Matriz reproduce método directo (dif. máx. < 1e-6)",TRUE

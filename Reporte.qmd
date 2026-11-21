@@ -6,7 +6,6 @@ editor: visual
 
 ```{r}
 # Librerías y parámetros
-
 source("cod/librerias.R")
 source("cod/Parametros.R")
 

@@ -1,3 +1,5 @@
+# C. Flujos, reservas suministradas y profit testing ----
+
 
 #Separamos tabla.anual en dos:
 
@@ -13,74 +15,28 @@ tabla.anual <- tabla.anual %>%
 
 
 
-#Tabla anual de Flujos, Reservas y Resultados: ----
+## Tabla anual de Flujos, Reservas y Resultados: ----
 
-tabla.resultados <- tabla.anual %>%
-  mutate(
-    Reserva.t_1 = reservas.vt[1:5] * activos.inicio,
-    Primas.anual = prima * activos.inicio,
-    Gastos.anual = gasto.anual.vigente * activos.inicio,
-    Comisiones.anual = comision.prima * Primas.anual,
-    Fondos.acumulados = calcular.At.acum(Reserva.t_1, Primas.anual, Gastos.anual,  
-                                    Comisiones.anual, j),
-    Beneficios.anual = beneficio * fallecimientos.anuales,
-    Reserva.t = reservas.vt[2:6] * activos.fin,
-    Resultado.cartera = Fondos.acumulados - Beneficios.anual - Reserva.t
-  ) %>%
-  select(-names(tabla.anual)[-1])
+tabla.resultados <- calcular.resultados()
 
 
-
-#Tabla de Recursos y Aportes ----
+## Recursos y Aportes ----
 
 F0 <- (100000 - gasto.adquisicion) * N0
 
+# Lista con: [1] tabla.recursos, [2] Saldo min, [3] Aportes tot y [4] Respaldo:
 
-eFt <- numeric(5)
-aporte <- numeric(5)
-Ft <- numeric(5)
+recursos <- calcular.recursos(F0, tabla.resultados, j)
 
-saldo.previo <- F0
+recursos[1]
 
-for(i in 1:5){
-  
-  eFt[i] <-
-    (
-      saldo.previo +
-        tabla.resultados$Primas.anual[i] -
-        tabla.resultados$Gastos.anual[i] -
-        tabla.resultados$Comisiones.anual[i]
-    ) * (1 + j) -
-    tabla.resultados$Beneficios.anual[i]
-  
-  aporte[i] <- max(0, - eFt[i])
-  
-  Ft[i] <- eFt[i] + aporte[i]
-  
-  saldo.previo <- Ft[i]
-}
+recursos[2]
 
-#Saldo minimo antes de aporte:
-min(eFt)
+recursos[3]
 
-#Suma de aportes:
-sum(aporte)
+recursos[4]
 
-
-# Respaldo año 1:
-
-Respaldo.anio.1 <- Ft[1] - tabla.resultados$Reserva.t[1]
-
-##Tabla final recursos: ----
-
-tabla.recursos <- tibble(anio = 1:5, 
-                         Saldo.cierre.ant = eFt,
-                         Aportes = aporte,
-                         Saldo.cierre.post = Ft)
-
-
-
-# Tabla NPV y margen: ----
+## Tabla NPV y margen: ----
 
 
 tabla.descuento.saldos <- tabla.resultados %>% 

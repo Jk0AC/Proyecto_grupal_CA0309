@@ -1,7 +1,7 @@
 
-#Parametros ejercicios:
+#Parametros ejercicios ----
 
-
+## Base: ----
 fecha.ref <- ymd("2025-12-31")
 
 r <- 0.03 # renuncia anual (decremento único)
@@ -23,4 +23,8 @@ j <- 0.05   # rendimiento
 interes <- 0.04   # descuento
 
 reservas.vt <- c(0, 40000, 35000, 25000, 15000, 0)
+
+## Escenarios adversos: ----
+gasto.anual.alterno <- 11000
+j.alterno <- 0.04
 

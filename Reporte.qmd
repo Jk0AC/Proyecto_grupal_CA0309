@@ -1,0 +1,97 @@
+---
+title: "Reporte"
+format: typst
+execute:
+  echo: false
+  message: false
+  warning: false
+editor: visual
+---
+
+```{r}
+#| include: false
+# Librerías y parámetros
+source("cod/librerias.R")
+source("cod/Parametros.R")
+
+```
+
+```{r}
+#| include: false
+# Lectura y depuración
+source("cod/limpieza_data.R")
+
+#Lectura funciones:
+source("cod/Funciones.R")
+```
+
+## E. Equity-linked y rentabilidad estocástica
+
+Se evaluó **una cuenta individual representativa de un hombre de 45 años**, independiente de la cartera colectiva. En **R**, con `set.seed(2026)`, se generaron 1.000 trayectorias financieras de cinco años mediante logrendimientos independientes de media 0,04 y desviación estándar 0,15. Se usaron las **mismas trayectorias** para ambas garantías (100.000 y 110.000 u.m.) y un cargo del 2 % sobre el saldo al inicio de cada año.
+
+La cuenta parte de 100.000 u.m. y, después del cargo, acumula el rendimiento del año. Si Z es una variable normal estándar, la evolución es:
+
+```{=typst}
+$ A_t = 0.98 dot A_(t-1) dot exp(0.04 + 0.15 Z_t) $
+```
+La permanencia contractual combina la mortalidad masculina de las edades 45 a 49 con la renuncia anual del 3 %, bajo fuerzas constantes durante cada año. Se supone independencia entre mortalidad, renuncia y rendimientos. Con s como probabilidad acumulada de permanencia:
+
+```{=typst}
+$ s_0 = 1, quad s_t = s_(t-1)(1-q_(44+t))(1-0.03) $
+```
+Los cargos se reciben al **inicio** de cada año; el complemento de la garantía se paga al **cierre** del año 5. Para cada trayectoria, los valores presentes son:
+
+```{=typst}
+$ "VP de cargos" = sum_(t=1)^5 frac(s_(t-1) dot 0.02 dot A_(t-1), 1.04^(t-1)) $
+$ "VP del complemento"_G = frac(s_5 dot max(G-A_5,0), 1.04^5) $
+$ "NPV"_G = "VP de cargos" - "VP del complemento"_G $
+```
+Se considera *pérdida* cuando el NPV es negativo; el **CTE95** es la media de las 50 mayores observaciones de la pérdida (definida como el negativo del NPV), entre las 1.000 trayectorias. El evento de *activación* (saldo final inferior a la garantía) es distinto del evento de pérdida financiera del proveedor. No se simularon fallecimientos ni renuncias individuales: su efecto se incorpora mediante probabilidades de permanencia.
+
+```{r}
+#| label: tbl-inciso-e
+#| echo: false
+#| message: false
+#| warning: false
+#| results: asis
+# Ejecuta la simulación si el script o los archivos de resultados no están actualizados.
+# El código también exporta las tablas y el histograma a cod/Inciso_E_resultados.
+invisible(capture.output(source("cod/Inciso_E.R")))
+tabla_E <- read.csv("cod/Inciso_E_resultados/E2_comparacion_garantias.csv")
+tabla_E_presentacion <- data.frame(
+  Garantia = format(tabla_E$garantia, big.mark = ".", scientific = FALSE, trim = TRUE),
+  `VP complemento (u.m.)` = sprintf("%.2f", tabla_E$VP_medio_complemento),
+  `NPV medio (u.m.)` = sprintf("%.2f", tabla_E$NPV_medio_proveedor),
+  `Perdida (%)` = sprintf("%.1f", 100 * tabla_E$Frecuencia_perdida),
+  `CTE95 (u.m.)` = sprintf("%.2f", tabla_E$CTE95_perdida),
+  `Activacion (%)` = sprintf("%.1f", 100 * tabla_E$Frecuencia_activacion_garantia),
+  check.names = FALSE
+)
+knitr::kable(tabla_E_presentacion,
+             caption = "Comparación de las dos garantías: resultados simulados en R.")
+```
+
+```{r}
+#| label: fig-inciso-e
+#| echo: false
+#| fig-cap: "Distribución del NPV del proveedor con escalas comparables para las dos garantías."
+#| out-width: "100%"
+knitr::include_graphics("cod/Inciso_E_resultados/E5_histogramas_NPV.png")
+```
+
+En la ejecución verificada en R, el NPV medio fue **4.054,40 u.m.** para (G=100,000), frente a **1.093,46 u.m.** para (G=110,000). La frecuencia de pérdida aumentó de **24,6 % a 33,9 %** y el CTE95 de **22.959,79 a 29.892,45 u.m.**; la activación de la garantía pasó de **36,7 % a 48,5 %**. Por tanto, **se recomienda la garantía de 100.000** desde la perspectiva de rentabilidad y pérdidas de cola del proveedor, sin perjuicio de criterios comerciales. Con rendimientos y cargos iguales, elevar la garantía nunca reduce el complemento ni aumenta el NPV de una trayectoria; esta condición se confirmó junto con las otras diez comprobaciones.
+
+El detalle anual de la trayectoria 1, las 1.000 observaciones de NPV y las verificaciones se conservan en `cod/Inciso_E_resultados/` como anexos reproducibles.
+
+```{=typst}
+#pagebreak()
+```
+## F. Interpretación conceptual de NIIF 17
+
+**1. Medición inicial y ajuste por riesgo (RA).** Para el seguro de fallecimiento del inciso C se considerarían, dentro de los límites contractuales aplicables, las **primas anuales anticipadas** (50.000 por vigente), los **beneficios por fallecimiento** (5.000.000 al cierre del año), las **comisiones del 5 %**, los **gastos anuales** (10.000 por vigente) y la **adquisición inicial** (75.000 por contrato), con sus momentos de pago y probabilidades de mortalidad y renuncia. Bajo NIIF 17, los flujos de cumplimiento incorporan estimaciones actuales, el valor temporal del dinero y un **RA** que refleja la compensación exigida por soportar incertidumbre no financiera, como variaciones en mortalidad, renuncia y gastos.
+
+**2. CSM y onerosidad.** La **CSM** es la utilidad aún no devengada por los servicios de seguro futuros de un grupo de contratos. En un grupo inicialmente rentable, esa utilidad se difiere y reconoce a medida que se presta el servicio; en uno **oneroso**, la pérdida inicial se reconoce en resultados, en vez de establecer una CSM positiva. La comparación requiere las reglas de agrupación y medición de NIIF 17, no solo el resultado de una póliza aislada.
+
+**3. NPV frente a CSM.** El *profit testing* de C calcula el NPV descontando resultados proyectados de la cartera al **4 %**, con rendimiento financiero supuesto del **5 %** y adquisición reconocida inicialmente. Un NPV positivo bajo esos supuestos **no prueba** una CSM positiva: NIIF 17 puede emplear otras hipótesis actuales, tasas de descuento pertinentes, ajuste por riesgo, límites y agrupaciones contractuales. Además, el NPV mide rentabilidad económica proyectada, mientras que la CSM determina utilidad contable futura no devengada.
+
+**4. CSM, reserva y efectivo.** La **reserva suministrada** en C (por contrato vigente: 0, 40.000, 35.000, 25.000, 15.000 y 0 a lo largo de los cierres correspondientes) es un insumo técnico para el *profit testing*, **no** la CSM. El **efectivo disponible** se estudia aparte mediante recursos iniciales, rendimientos y posibles aportes para cubrir necesidades de liquidez. Liberar una reserva en un cálculo técnico no equivale a cobrar efectivo, un aporte de fondos no es utilidad y una CSM positiva no asegura liquidez. Por eso, rentabilidad, medición contable y suficiencia de recursos deben evaluarse por separado.

@@ -1,11 +1,77 @@
 ---
-title: "Reporte"
-format: typst
+title: "Proyecto final"
+
+subtitle: "Contingencias de Vida II"
+
+title-block-style: default
+author: |- 
+   Jean Carlo Sanabria Martínez — C37241 \
+   Universidad de Costa Rica, Escuela de Mátematica, Departamento de Ciencias Actuariales \
+   Ciudad Universitaria Rodrigo Facio, San Pedro de Montes de Oca, San José, Costa Rica \
+   Profesor: Yerling Ramírez Morera \
+   22 de agosto de 2026
+    
+
+lang: es
+  
+format:  
+  typst:
+    papersize: a4
+    fontsize: 12pt
+    margin:
+       top: 2.2cm
+       bottom: 2.2cm
+       left: 2.2cm
+       right: 2.2cm
+       
+linestretch: 1.05
+
+header-includes:
+  - |
+    
+    #set page(
+    
+      
+    footer: context [
+    #line(
+     length: 100%,
+    stroke: (paint: rgb("#033e66"), thickness: 0.2pt)
+     )
+
+    #move(dy: -0.30cm)[
+    #text(fill: rgb("#033e66"),
+    size: 8pt
+    )[
+      #grid(
+        columns: (1fr, auto),
+        [CA-0309 Contingencia de Vida II],
+        [#counter(page).display()]
+           )
+         ]
+       ]
+    ]
+      )
+      
+    #show heading.where(level: 2): set text(
+      fill: rgb("#033e66")
+    )
+    
+    
+    #show heading.where(level: 1): set text(
+      fill: rgb("#033e66")
+    )
+    
+    #set par(spacing: 1em)
+      
 execute:
   echo: false
-  message: false
   warning: false
-editor: visual
+  message: false
+editor: 
+  markdown: 
+    wrap: 72
+    
+highlight-style: arrow
 ---
 
 ```{r}
@@ -19,11 +85,221 @@ source("cod/Parametros.R")
 ```{r}
 #| include: false
 # Lectura y depuración
-source("cod/limpieza_data.R")
+source("cod/limpieza_data.R") %>% capture.output() %>% invisible()
 
 #Lectura funciones:
-source("cod/Funciones.R")
+source("cod/Funciones.R") %>% capture.output() %>% invisible()
+
 ```
+
+```{r}
+source("cod/Inciso_A.R") %>% capture.output() %>% invisible()
+source("cod/Inciso_C.R") %>% capture.output() %>% invisible()
+source("cod/Inciso_D.R") %>% capture.output() %>% invisible()
+
+```
+
+
+
+## C. Flujos, reservas suministradas y profit testing
+
+```{r}
+#| label: tbl-inciso-c
+#| echo: false
+#| message: false
+#| warning: false
+#| results: asis
+
+tabla.resultados %>%  
+  transmute(
+    Año = anio,
+    `Resv. Inicial` = Reserva.t.1 / 1e6,
+    Primas = Primas.anual / 1e6,
+    Gastos = Gastos.anual / 1e6,
+    Comis. = Comisiones.anual / 1e6,
+    Beneficios = Beneficios.anual / 1e6,
+    `Resv. Final` = Reserva.t / 1e6,
+    Resultado = Resultado.cartera / 1e6
+  ) %>%  
+  mutate(
+    across(
+      -Año,
+      \(x) format(round(x, 2),
+               big.mark = ".",
+               decimal.mark = ",")
+    ))%>%
+  kable(
+    digits = 1,
+    caption = "Tabla anual de flujos, reservas y resultados cartera (MM u.m.)",
+    align = c("l","c","c","c","c","c","c","c","c")
+  )
+```
+
+Para el **tercer año de proyección** se parte de los activos vigentes al inicio del año y de los supuestos establecidos para **primas, gastos, comisiones, mortalidad, rendimiento y reservas**. El resultado económico se calcula mediante la metodología de *profit testing*: 
+
+
+$$ \Pi_t = A_t(1+j) - Beneficios_t - Reservas_t$$
+donde:
+$$\qquad A_t= Reserva_{t-1}+Primas_t-Gastos_t-Comisiones_t$$
+Son los recursos iniciales al inicio del año, la reserva inicial tiene un efecto positivo sobre el resultado porque forma parte de los recursos disponibles al inicio del año y genera rendimiento junto con las primas.
+
+Para calcular el resultados de la cartera cálculamos los montos totales con las pólizas vigentes al inicio del año tres, de modo que: $\quad A_3$ = 3.358,65 + 4.798,086 - 959,62 - 239,90 \
+
+Los recursos netos se invierten al rendimiento esperado del 5%: $\quad A_3(1.05)$ = 7.305,074 \
+Esto representa el monto disponible en millones de u.m al cierre del año, antes de reconocer siniestros y reservas finales.
+
+El costo esperado de fallecimientos se obtiene como:
+$$Beneficios_3=D_3\times S$$
+donde: \
+$\qquad D_3:\quad$fallecimientos esperados en el año 3 (995), \
+$\qquad S:\quad$el monto de beneficio por fallecimiento (5 000 000 u.m) \
+Este monto se resta porque constituye una salida de recursos para la aseguradora.
+
+Al cierre del año queda una población activa que continuará vigente. Para esas pólizas debe mantenerse una reserva:
+
+$$Reserva_3=N_3 \times v_3 $$
+donde: \
+$\qquad N_3:\quad$activos al cierre (92 103), \
+$\qquad v_3:\quad$reserva por póliza al cierre año 3 (25 000 u.m), \
+La reserva final tiene un efecto negativo porque representa una obligación que debe mantenerse para las pólizas que permanecen vigentes. Por ello, los recursos destinados a constituir dicha reserva no pueden reconocerse como utilidad del período.
+
+Finalmente:
+$$\Pi_3 = 7305.074 − 4977.008 − 2302.563$$
+El valor obtenido 25,50 MM u.m representa la utilidad económica esperada de la cartera durante el tercer año.
+
+```{r}
+#| label: tbl-inciso-c2
+#| echo: false
+#| message: false
+#| warning: false
+#| results: asis
+
+tabla.NPV %>%
+  transmute(
+    Año = anio,
+    Descuento = round(Descuento, 4),
+    `VP Resultado` = VP.flujos / 1e6,
+    `VP Primas` = VP.primas / 1e6
+  ) %>%  
+  mutate(
+    across(
+      -Año,
+      \(x) format(round(x, 2),
+               big.mark = ".",
+               decimal.mark = ",")
+    )) %>% 
+  kable(
+    digits = c(0, 4, 2, 2),
+    caption = "Flujos del NPV y margen (MM de u.m)",
+    align = rep("c", 4)
+  )
+
+
+tibble(
+  Métrica = c("NPV", "Margen"),
+  Valor = c(
+    format(
+      round(resumen.NPV$NPV / 1e6, 2),
+      big.mark = ".",
+      decimal.mark = ","
+    ),
+    scales::percent(
+      resumen.NPV$Margen,
+      accuracy = 0.01
+    )
+  )
+) %>% 
+  
+kable(
+  col.names = c("Indicador", "Valor"),
+  align = c("l", "c")
+)
+
+```
+
+El resultado anterior se debe distinguir de los recursos o el efectivo disponible, note que para el mismo año tres el saldo de cierre antes de aportes, se calcula cómo:
+
+$$\tilde{F}_3 = ({F}_2 + Primas_3 - Gastos_3-Comisiones_3) \times (1,05) - Beneficios_3 $$
+donde: \
+$\qquad F_2$ : es el saldo de cierre del segundo año después de aportes (1.086,96 MM u.m), \
+$\qquad Primas_3$ :  las primas cobradas inicio de año (4.798,08 MM u.m), \
+$\qquad Comisiones_3$ :  las comisiones cobradas por las primas de la cartera (239,90 MM u.m), \
+$\qquad Beneficios_3$ :  los beneficios pagados (4.977,01 MM u.m) \
+
+Esto nos da al cierre un recurso disponible antes de aportes de −57,22 MM u.m, es decir mientras que la rentabilidad por seguros calculada por el **profit testing** es positiva en el año tres, la entidad posee un flujo negativo en sus recursos. 
+
+La razón es que ambas medidas tienen objetvos distintos aunque ambos usen los resultados de cartera, el **profit testing** mide la rentabilidad económica de la cartera de seguros, mientras que los recursos al cierre antes de aportes miden la capacidad financiera acumulada **disponible** para absorber resultados desfavorables y en caso de serlos poder solicitar aportes o financiación extraordinaria. 
+
+Una de las diferencias centrales entre ambos es que los **recursos** no acumulan ni deducen reservas, porque estas no representan capital libre que pueda utilizarse para cubrir cualquier pérdida de la compañía, sin embargo el **profit testing** sí mide la rentabilidad generada por los contratos durante cada año, por lo que sí reconoce el efecto económico de la liberación de reservas y de la constitución de nuevas reservas.
+
+
+```{r}
+#| label: tbl-inciso-c3
+#| echo: false
+#| message: false
+#| warning: false
+#| results: asis
+
+recursos[[1]] %>%
+  transmute(
+    Año = anio,
+    eFt = eFt / 1e6,
+    Aporte = aporte / 1e6,
+    Ft = Ft / 1e6
+  ) %>%  
+  mutate(
+    across(
+      -Año,
+      \(x) format(round(x, 2),
+               big.mark = ".",
+               decimal.mark = ",")
+    )) %>% 
+  kable(
+    col.names = c(
+      "Año",
+      "$\\tilde{F}_t$",
+      "Aporte",
+      "$F_t$"
+    ),
+    digits = 2,
+    align = c("l","c","c","c"),
+    caption = "Tabla anual de recursos y aportes (MM de u.m.)"
+  )
+```
+
+
+## D. Escenario adverso y respaldo de las reservas
+
+```{r}
+#| label: tbl-inciso-d
+#| echo: false
+#| message: false
+#| warning: false
+#| results: asis
+
+# cuadro base/adverso con NPV, saldo mínimo de recursos antes de aportes, total de aportes adicionales
+# durante los cinco años y diferencia recursos menos reserva al cierre del año 1
+
+
+tibble( Escenario = c("Base", "Adverso"),
+       NPV = c(resumen.NPV$NPV, tabla.NPV.adv$NPV)/1e6,
+       "Saldo mínimo $\\tilde{F}_t$" = c(recursos$saldo.minimo, recursos.adv$saldo.minimo)/1e6 ,
+       "Total de aportes" = c(recursos$aportes.totales,recursos.adv$aportes.totales)/1e6,
+       "$\\tilde{F}_1 - V_1$" =  c(recursos$respaldo.anio.1, recursos.adv$respaldo.anio.1)/1e6) %>% mutate(across(-Escenario, \(x) format(round(x, 2),
+               big.mark = ".",
+               decimal.mark = ","
+    ))) %>% 
+  kable(
+    align = c("l", rep("c", 4)),
+    caption = "Tabla comparativa de NPV y recursos base/adverso (MM de u.m.)" 
+  )
+
+
+
+```
+
+
+
 
 ## E. Equity-linked y rentabilidad estocástica
 

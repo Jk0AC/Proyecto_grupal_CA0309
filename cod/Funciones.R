@@ -1,5 +1,16 @@
 
 
+# Función crea Matriz de transición:
+
+matriz.transicion <- function(p, qr, qd) {
+  matrix(c(p, qr, qd,
+           0, 1,  0,
+           0, 0,  1), nrow = 3, byrow = TRUE,
+         dimnames = list(c("Activo", "Renuncia", "Fallecimiento"),
+                         c("Activo", "Renuncia", "Fallecimiento")))
+}
+
+
 # Flujos, profit testing y Escenarios adversos ----
 #Funcion calcula At y devuelve su valor acumulado por el rendimiento al final del
 #año:

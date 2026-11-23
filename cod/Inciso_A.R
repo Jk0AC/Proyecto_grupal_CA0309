@@ -1,0 +1,126 @@
+
+
+# Población inicial por edad y sexo ----
+
+
+cohortes <- base %>%
+  mutate(sexo = if_else(Genero == "Masculino", "M", "F")) %>%
+  count(sexo, edad0 = as.integer(Edad), name = "N0") %>%
+  arrange(sexo, edad0)
+
+stopifnot(sum(cohortes$N0) == N0,
+          max(cohortes$edad0) + horizonte - 1 <= max(tabla.mortalidad$edad))
+
+
+
+# Probabilidades de decremento múltiple ----
+
+
+mort.larga <- tabla.mortalidad %>%
+  pivot_longer(c(M, F), names_to = "sexo", values_to = "qd.sola")
+
+# Proyección: cada cohorte-año con edad a + t - 1 ----
+proy.prob <- cohortes %>%
+  crossing(anio = 1:horizonte) %>%
+  mutate(edad = edad0 + anio - 1) %>%
+  left_join(mort.larga, by = c("sexo", "edad" = "edad")) %>%
+  mutate(qr.sola = r,
+         mu.d = -log(1 - qd.sola),
+         mu.r = -log(1 - qr.sola),
+         p    = exp(-(mu.d + mu.r)),
+         qd   = mu.d / (mu.d + mu.r) * (1 - p),   # fallece (ambas causas)
+         qr   = mu.r / (mu.d + mu.r) * (1 - p),   # renuncia (ambas causas)
+         suma = p + qd + qr)
+
+stopifnot(!anyNA(proy.prob$qd.sola), all(abs(proy.prob$suma - 1) < 1e-12))
+
+
+# Matriz de transición y proyección por cohorte ----
+
+## Método matricial: ----
+# estado_t = estado_(t-1) %*% P_t (P_t depende de la edad) 
+proy.matriz <- lapply(seq_len(nrow(cohortes)), 
+                      function(k) {
+                        d <- proy.prob %>% filter(sexo == cohortes$sexo[k], edad0 == cohortes$edad0[k]) %>%
+                          arrange(anio)
+                        est <- c(cohortes$N0[k], 0, 0)
+                        out <- matrix(NA_real_, horizonte, 3)
+                        for (t in 1:horizonte) {
+                          est <- est %*% matriz.transicion(d$p[t], d$qr[t], d$qd[t])
+                          out[t, ] <- est
+                        }
+                        tibble(sexo = cohortes$sexo[k], edad0 = cohortes$edad0[k], anio = 1:horizonte,
+                               act.fin.mat = out[, 1], ren.acum.mat = out[, 2], fal.acum.mat = out[, 3])
+                      }) %>% bind_rows()
+
+## Método directo: ----
+#l_t = l_(t-1) * p; salidas = l_(t-1) * q 
+proy <- proy.prob %>%
+  arrange(sexo, edad0, anio) %>%
+  group_by(sexo, edad0) %>%
+  mutate(act.fin    = N0 * cumprod(p),
+         act.ini    = lag(act.fin, default = first(N0)),
+         fallecen   = act.ini * qd,          # salidas anuales
+         renuncian  = act.ini * qr,
+         fal.acum   = cumsum(fallecen),      # acumuladas (estados absorbentes)
+         ren.acum   = cumsum(renuncian)) %>%
+  ungroup() %>%
+  left_join(proy.matriz, by = c("sexo", "edad0", "anio"))
+
+## La matriz reproduce el cálculo directo ----
+
+dif.max <- proy %>%
+  summarise(m = max(abs(act.fin - act.fin.mat), abs(ren.acum - ren.acum.mat),
+                    abs(fal.acum - fal.acum.mat))) %>% pull(m)
+dif.max
+
+
+# Tabla anual agregada de población por causa ----
+
+
+tabla.anual <- proy %>%
+  group_by(anio) %>%
+  summarise(activos.inicio = sum(act.ini),
+            fallecimientos.anuales = sum(fallecen),
+            renuncias.anuales = sum(renuncian),
+            activos.fin = sum(act.fin), .groups = "drop") %>%
+  mutate(salidas.anuales.total = fallecimientos.anuales + renuncias.anuales,
+         fallecidos.acumulados = cumsum(fallecimientos.anuales),
+         renuncias.acumuladas  = cumsum(renuncias.anuales),
+         salidas.acumuladas.total = fallecidos.acumulados + renuncias.acumuladas)
+tabla.anual
+
+
+# Verificaciones ----
+
+
+verificaciones <- tibble(
+  verificacion = c("N0 = suma por edad y sexo",
+                   "p + qd + qr = 1",
+                   "Activos inicio = salidas + activos fin (cohorte-año)",
+                   "Activos inicio año t = activos fin año t-1",
+                   "N0 = activos fin 5 + fallecidos acum. + renuncias acum.",
+                   "Matriz reproduce método directo (dif. máx. < 1e-6)"),
+  resultado = c(sum(cohortes$N0) == N0,
+                all(abs(proy$suma - 1) < 1e-12),
+                all(abs(proy$act.ini - proy$fallecen - proy$renuncian - proy$act.fin) < 1e-6),
+                all(abs(tabla.anual$activos.inicio[-1] - tabla.anual$activos.fin[-horizonte]) < 1e-6),
+                abs(N0 - with(tabla.anual[horizonte, ],
+                              activos.fin + fallecidos.acumulados + renuncias.acumuladas)) < 1e-6,
+                dif.max < 1e-6))
+verificaciones
+stopifnot(all(verificaciones$resultado))
+
+
+# Exportación ----
+
+
+write.csv(cuadro.registros, "cod/Inciso_A/resultados/A1_cuadro_registros_N0.csv", row.names = FALSE)
+write.csv(traslapes,        "cod/Inciso_A/resultados/A2_traslapes.csv", row.names = FALSE)
+write.csv(cohortes,         "cod/Inciso_A/resultados/A3_poblacion_inicial_edad_sexo.csv", row.names = FALSE)
+write.csv(proy %>% select(sexo, edad0, anio, edad, qd.sola, qr.sola, p, qd, qr,
+                          act.ini, fallecen, renuncian, act.fin),
+          "cod/Inciso_A/resultados/A4_proyeccion_por_cohorte.csv", row.names = FALSE)
+write.csv(tabla.anual,      "cod/Inciso_A/resultados/A5_tabla_anual_por_causa.csv", row.names = FALSE)
+write.csv(verificaciones,   "cod/Inciso_A/resultados/A6_verificaciones.csv", row.names = FALSE)
+

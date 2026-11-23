@@ -50,7 +50,7 @@ matriz.comp.NPV <- matrix(c(tabla.NPV$NPV, tabla.NPV.adv$NPV,
 
 #Tabla comparativa base contra adverso:
 
-  tabla.comp.escenarios <- tabla.resultados %>% 
+tabla.comp.escenarios <- tabla.resultados %>% 
   left_join(tabla.resultados.adv, by = "anio") %>%
   select(anio, contains("Gastos"), contains("Fondos"), contains("Resultado"))
   

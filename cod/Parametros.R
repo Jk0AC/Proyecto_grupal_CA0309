@@ -28,3 +28,7 @@ reservas.vt <- c(0, 40000, 35000, 25000, 15000, 0)
 gasto.anual.alterno <- 11000
 j.alterno <- 0.04
 
+
+prima.esc.adcional <- 55000
+
+

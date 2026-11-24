@@ -148,10 +148,16 @@ Para calcular el resultados de la cartera cálculamos los montos totales con las
 Los recursos netos se invierten al rendimiento esperado del 5%: $\quad A_3(1.05)$ = 7.305,074 \
 Esto representa el monto disponible en millones de u.m al cierre del año, antes de reconocer siniestros y reservas finales.
 
+```{=typst}
+#pagebreak()
+```
+
 El costo esperado de fallecimientos se obtiene como:
 $$Beneficios_3=D_3\times S$$
 donde: \
 $\qquad D_3:\quad$fallecimientos esperados en el año 3 (995), \
+
+
 $\qquad S:\quad$el monto de beneficio por fallecimiento (5 000 000 u.m) \
 Este monto se resta porque constituye una salida de recursos para la aseguradora.
 
@@ -217,20 +223,20 @@ kable(
 
 ```
 
-El resultado anterior se debe distinguir de los recursos o el efectivo disponible, note que para el mismo año tres el saldo de cierre antes de aportes, se calcula cómo:
+El resultado anterior se debe distinguir de los **recursos o el efectivo disponible**, note que para el mismo año tres el saldo de cierre antes de aportes, se calcula cómo:
 
-$$\tilde{F}_3 = ({F}_2 + Primas_3 - Gastos_3-Comisiones_3) \times (1,05) - Beneficios_3 $$
+$$\tilde{F}_3 = ({F}_2 + P_3 - G_3-C_3) \times (1,05) - B_3 $$
 donde: \
 $\qquad F_2$ : es el saldo de cierre del segundo año después de aportes (1.086,96 MM u.m), \
-$\qquad Primas_3$ :  las primas cobradas inicio de año (4.798,08 MM u.m), \
-$\qquad Comisiones_3$ :  las comisiones cobradas por las primas de la cartera (239,90 MM u.m), \
-$\qquad Beneficios_3$ :  los beneficios pagados (4.977,01 MM u.m) \
+$\qquad P_3$ :  las primas cobradas inicio de año (4.798,08 MM u.m), \
+$\qquad C_3$ :  las comisiones cobradas por las primas de la cartera (239,90 MM u.m), \
+$\qquad B_3$ :  los beneficios pagados (4.977,01 MM u.m) \
 
 Esto nos da al cierre un recurso disponible antes de aportes de −57,22 MM u.m, es decir mientras que la rentabilidad por seguros calculada por el **profit testing** es positiva en el año tres, la entidad posee un flujo negativo en sus recursos. 
 
-La razón es que ambas medidas tienen objetvos distintos aunque ambos usen los resultados de cartera, el **profit testing** mide la rentabilidad económica de la cartera de seguros, mientras que los recursos al cierre antes de aportes miden la capacidad financiera acumulada **disponible** para absorber resultados desfavorables y en caso de serlos poder solicitar aportes o financiación extraordinaria. 
+La razón es que ambas medidas tienen objetvos distintos: el **profit testing** mide la rentabilidad económica de la cartera de seguros, mientras que los **recursos al cierre** antes de aportes miden la capacidad financiera acumulada **disponible** para absorber resultados desfavorables y en caso de presentarse, poder solicitar aportes o financiación extraordinaria. 
 
-Una de las diferencias centrales entre ambos es que los **recursos** no acumulan ni deducen reservas, porque estas no representan capital libre que pueda utilizarse para cubrir cualquier pérdida de la compañía, sin embargo el **profit testing** sí mide la rentabilidad generada por los contratos durante cada año, por lo que sí reconoce el efecto económico de la liberación de reservas y de la constitución de nuevas reservas.
+Una de las diferencias centrales entre ambos es que los **recursos** no acumulan ni deducen reservas, por que estas no representan capital libre que pueda utilizarse para cubrir cualquier pérdida de la compañía, sin embargo el **profit testing** mide la rentabilidad generada por los contratos durante cada año, por lo que sí reconoce el efecto económico de la liberación de reservas y de la constitución de nuevas reservas.
 
 
 ```{r}
@@ -297,9 +303,24 @@ tibble( Escenario = c("Base", "Adverso"),
 
 
 ```
+\
+Tenemos que en el resultado anual del profit testing en el escenario adverso se mide por:
+$$\Pi_t^{adverso}=(A_t-\Delta G_t)(1.04) -B_t-V_t ,\quad con \quad\Delta G = 1000 \quad y \quad j = 0,05 \rightarrow0,04$$
+Por tanto:
 
+$$\Pi_t^{base}-\Pi_t^{adverso} =0,01A_t + 1.04 \times 1000$$
 
+Mide el cambio entre ambos resultados para cada año.
 
+Claramente el efecto conjunto se observa en dos partes en la ecuación, por un lado un **menor rendimiento** que generá un monto proyectado menor y por el otro un costo adicional por un **mayor gasto en pólizas**, atenuado por el menor rendimiento, sin embargo la magnitud de los fondos disponibles es mucho mayor en comparación, por lo que el deterioro es mayor del de cada efecto separado, aunque menor que la suma de ambos efectos, es por esto que no es equivalente la adición de efectos para medir el resultado del impacto conjunto.
+
+Los resultados evidencian un **deterioro económico** en todos los años proyectados. El *NPV disminuye* de aproximadamente −12.912,86 MM u.m a -13 617,35 MM u.m, mientras que el margen sobre primas descontadas pasa de −57,88 % a −61,04 %. Este deterioro responde al efecto conjunto observado. En cuanto a los recursos financieros, resultan **insuficientes para cubrir la reserva** suministrada durante el primer año en los dos escenarios. Por lo que, aunque los aportes permiten evitar déficits de efectivo, no garantizan la cobertura de dichas reservas.
+
+Ante estos resultados, para mejorar la **rentabilidad de la cartera** se recomienda: *revisar la estructura de primas*, debido a que se detectó un problema de rentabilidad en ambos escenarios con un NPV negativo, lo que sugiere que las actuales son insuficientes para compensar los costos y beneficios esperados; *vigilar los costos administrativos* por mantenimiento de póliza ya que se comprobó que un escenario adverso en estos deteriora a un más el resultado; la pérdida de rendimiento revela una exposición del resultado ante caídas en las inversiones,se recomienda *revisar la estrategia de inversión*.
+
+Otro punto a considerar es la **necesidad de efectivo y liquidez** que reflejan las proyecciones, que es aún mayor en situaciones desfavorables, por lo que se recomienda *establecer una planificación* de los *aportes financieros* requeridos para evitar déficits de efectivo. Donde se evaluae separadamente la capacidad de financiamiento de la cartera y la relación entre los recursos proyectados y las reservas, identificando posibles necesidades adicionales de respaldo.
+
+Estas recomendaciones tienen el objetivo de mejorar la rentabiliodad esperada, reducir las salidas de efectivo y mejorar márgenes, mejorar la estabilidad del rendimiento de inversión, evitar déficits de liquidez e identificar necesidades adicionales de respaldo. 
 
 ## E. Equity-linked y rentabilidad estocástica
 

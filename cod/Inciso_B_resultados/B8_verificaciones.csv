@@ -1,0 +1,5 @@
+"verificacion","resultado"
+"alguno = ambos + cónyuge sobreviviente + activo sobreviviente",TRUE
+"alguno = P(x) + P(y) - P(ambos)",TRUE
+"ambos <= cónyuge sobreviviente + ambos = P(y) <= alguno",TRUE
+"todas las probabilidades en [0,1]",TRUE

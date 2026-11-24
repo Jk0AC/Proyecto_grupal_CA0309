@@ -64,7 +64,7 @@ names(tabla.comp.escenarios) <- c("anio","Gasto.Base","Gasto.Adverso",
 # Tablas imprimibles Reporte ----
 
 tabla.comp.adv <- tibble(
-  Escenario = c("Base", "Adverso"),
+  "\u00A0Escenario\u00A0" = c("Base", "Adverso"),
   NPV = c(resumen.NPV$NPV, tabla.NPV.adv$NPV) / 1e6,
   "Saldo mínimo $\\tilde{F}_t$" = c(recursos$saldo.minimo, recursos.adv$saldo.minimo) /
     1e6 ,
@@ -73,7 +73,7 @@ tabla.comp.adv <- tibble(
   "$\\tilde{F}_1 - V_1$" =  c(recursos$respaldo.anio.1, recursos.adv$respaldo.anio.1) /
     1e6
 ) %>%
-  mutate(across(-Escenario, \(x) format(
+  mutate(across(-"\u00A0Escenario\u00A0", \(x) format(
     round(x, 2), big.mark = ".", decimal.mark = ","
   )))
 

@@ -11,7 +11,6 @@ author: |-
    Profesor: Yerling Ramírez Morera \
    22 de agosto de 2026
     
-
 lang: es
   
 format:  
@@ -96,6 +95,7 @@ source("cod/Funciones.R") %>% capture.output() %>% invisible()
 source("cod/Inciso_A.R") %>% capture.output() %>% invisible()
 source("cod/Inciso_C.R") %>% capture.output() %>% invisible()
 source("cod/Inciso_D.R") %>% capture.output() %>% invisible()
+source("cod/Calculo_adicional_Ronda.R") %>% capture.output() %>% invisible()
 
 ```
 
@@ -180,20 +180,7 @@ El valor obtenido 25,50 MM u.m representa la utilidad económica esperada de la 
 #| warning: false
 #| results: asis
 
-tabla.NPV %>%
-  transmute(
-    Año = anio,
-    Descuento = round(Descuento, 4),
-    `VP Resultado` = VP.flujos / 1e6,
-    `VP Primas` = VP.primas / 1e6
-  ) %>%  
-  mutate(
-    across(
-      -Año,
-      \(x) format(round(x, 2),
-               big.mark = ".",
-               decimal.mark = ",")
-    )) %>% 
+tabla.flujos.descontados %>% 
   kable(
     digits = c(0, 4, 2, 2),
     caption = "Flujos del NPV y margen (MM de u.m)",
@@ -201,20 +188,7 @@ tabla.NPV %>%
   )
 
 
-tibble(
-  Métrica = c("NPV", "Margen"),
-  Valor = c(
-    format(
-      round(resumen.NPV$NPV / 1e6, 2),
-      big.mark = ".",
-      decimal.mark = ","
-    ),
-    scales::percent(
-      resumen.NPV$Margen,
-      accuracy = 0.01
-    )
-  )
-) %>% 
+tabla.indicador %>% 
   
 kable(
   col.names = c("Indicador", "Valor"),
@@ -246,20 +220,7 @@ Una de las diferencias centrales entre ambos es que los **recursos** no acumulan
 #| warning: false
 #| results: asis
 
-recursos[[1]] %>%
-  transmute(
-    Año = anio,
-    eFt = eFt / 1e6,
-    Aporte = aporte / 1e6,
-    Ft = Ft / 1e6
-  ) %>%  
-  mutate(
-    across(
-      -Año,
-      \(x) format(round(x, 2),
-               big.mark = ".",
-               decimal.mark = ",")
-    )) %>% 
+tabla.recursos  %>% 
   kable(
     col.names = c(
       "Año",
@@ -287,14 +248,7 @@ recursos[[1]] %>%
 # durante los cinco años y diferencia recursos menos reserva al cierre del año 1
 
 
-tibble( Escenario = c("Base", "Adverso"),
-       NPV = c(resumen.NPV$NPV, tabla.NPV.adv$NPV)/1e6,
-       "Saldo mínimo $\\tilde{F}_t$" = c(recursos$saldo.minimo, recursos.adv$saldo.minimo)/1e6 ,
-       "Total de aportes" = c(recursos$aportes.totales,recursos.adv$aportes.totales)/1e6,
-       "$\\tilde{F}_1 - V_1$" =  c(recursos$respaldo.anio.1, recursos.adv$respaldo.anio.1)/1e6) %>% mutate(across(-Escenario, \(x) format(round(x, 2),
-               big.mark = ".",
-               decimal.mark = ","
-    ))) %>% 
+tabla.comp.adv %>% 
   kable(
     align = c("l", rep("c", 4)),
     caption = "Tabla comparativa de NPV y recursos base/adverso (MM de u.m.)" 
@@ -392,3 +346,10 @@ El detalle anual de la trayectoria 1, las 1.000 observaciones de NPV y las verif
 **3. NPV frente a CSM.** El *profit testing* de C calcula el NPV descontando resultados proyectados de la cartera al **4 %**, con rendimiento financiero supuesto del **5 %** y adquisición reconocida inicialmente. Un NPV positivo bajo esos supuestos **no prueba** una CSM positiva: NIIF 17 puede emplear otras hipótesis actuales, tasas de descuento pertinentes, ajuste por riesgo, límites y agrupaciones contractuales. Además, el NPV mide rentabilidad económica proyectada, mientras que la CSM determina utilidad contable futura no devengada.
 
 **4. CSM, reserva y efectivo.** La **reserva suministrada** en C (por contrato vigente: 0, 40.000, 35.000, 25.000, 15.000 y 0 a lo largo de los cierres correspondientes) es un insumo técnico para el *profit testing*, **no** la CSM. El **efectivo disponible** se estudia aparte mediante recursos iniciales, rendimientos y posibles aportes para cubrir necesidades de liquidez. Liberar una reserva en un cálculo técnico no equivale a cobrar efectivo, un aporte de fondos no es utilidad y una CSM positiva no asegura liquidez. Por eso, rentabilidad, medición contable y suficiencia de recursos deben evaluarse por separado.
+
+
+# Anexos
+
+
+
+

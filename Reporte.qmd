@@ -92,10 +92,14 @@ source("cod/Funciones.R") %>% capture.output() %>% invisible()
 ```
 
 ```{r}
+
+# Carga de archivos resolución incisos proyecto:
+
 source("cod/Inciso_A.R") %>% capture.output() %>% invisible()
 source("cod/Inciso_C.R") %>% capture.output() %>% invisible()
 source("cod/Inciso_D.R") %>% capture.output() %>% invisible()
-source("cod/Calculo_adicional_Ronda.R") %>% capture.output() %>% invisible()
+source("cod/Calculo_adicional.R") %>% capture.output() %>% invisible()
+source("cod/Inciso_E.R")%>% capture.output() %>% invisible
 
 ```
 
@@ -128,11 +132,12 @@ tabla.resultados %>%
                big.mark = ".",
                decimal.mark = ",")
     ))%>%
-  kable(
+  knitr::kable(
     digits = 1,
     caption = "Tabla anual de flujos, reservas y resultados cartera (MM u.m.)",
     align = c("l","c","c","c","c","c","c","c","c")
   )
+  
 ```
 
 Para el **tercer año de proyección** se parte de los activos vigentes al inicio del año y de los supuestos establecidos para **primas, gastos, comisiones, mortalidad, rendimiento y reservas**. El resultado económico se calcula mediante la metodología de *profit testing*: 
@@ -181,7 +186,7 @@ El valor obtenido 25,50 MM u.m representa la utilidad económica esperada de la 
 #| results: asis
 
 tabla.flujos.descontados %>% 
-  kable(
+  knitr::kable(
     digits = c(0, 4, 2, 2),
     caption = "Flujos del NPV y margen (MM de u.m)",
     align = rep("c", 4)
@@ -190,7 +195,7 @@ tabla.flujos.descontados %>%
 
 tabla.indicador %>% 
   
-kable(
+knitr::kable(
   col.names = c("Indicador", "Valor"),
   align = c("l", "c")
 )
@@ -221,7 +226,7 @@ Una de las diferencias centrales entre ambos es que los **recursos** no acumulan
 #| results: asis
 
 tabla.recursos  %>% 
-  kable(
+  knitr::kable(
     col.names = c(
       "Año",
       "$\\tilde{F}_t$",
@@ -249,7 +254,7 @@ tabla.recursos  %>%
 
 
 tabla.comp.adv %>% 
-  kable(
+  knitr::kable(
     align = c("l", rep("c", 4)),
     caption = "Tabla comparativa de NPV y recursos base/adverso (MM de u.m.)" 
   )
@@ -259,7 +264,7 @@ tabla.comp.adv %>%
 ```
 \
 Tenemos que en el resultado anual del profit testing en el escenario adverso se mide por:
-$$\Pi_t^{adverso}=(A_t-\Delta G_t)(1.04) -B_t-V_t ,\quad con \quad\Delta G = 1000 \quad y \quad j = 0,05 \rightarrow0,04$$
+$$\Pi_t^{adverso}=(A_t-\Delta G_t)(1.04) -B_t-V_t ,\quad con \quad\Delta G = 1000 \quad y \quad j' = 0,04$$
 Por tanto:
 
 $$\Pi_t^{base}-\Pi_t^{adverso} =0,01A_t + 1.04 \times 1000$$
@@ -305,9 +310,9 @@ Se considera *pérdida* cuando el NPV es negativo; el **CTE95** es la media de l
 #| message: false
 #| warning: false
 #| results: asis
-# Ejecuta la simulación si el script o los archivos de resultados no están actualizados.
+
 # El código también exporta las tablas y el histograma a cod/Inciso_E_resultados.
-invisible(capture.output(source("cod/Inciso_E.R")))
+
 tabla_E <- read.csv("cod/Inciso_E_resultados/E2_comparacion_garantias.csv")
 tabla_E_presentacion <- data.frame(
   Garantia = format(tabla_E$garantia, big.mark = ".", scientific = FALSE, trim = TRUE),

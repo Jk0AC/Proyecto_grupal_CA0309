@@ -95,3 +95,13 @@ tabla.recursos <-  recursos[[1]] %>%
                   big.mark = ".",
                   decimal.mark = ",")
     ))
+
+
+#Exportación: ----
+
+
+write.csv(tabla.resultados, "cod/Inciso_C_resultados/ C1_tabla_resultados.csv", row.names = FALSE)
+write.csv(recursos[[1]], "cod/Inciso_C_resultados/ C2_tabla_recursos.csv", row.names = FALSE)
+write.csv(tabla.NPV, "cod/Inciso_C_resultados/ C3_tabla_flujos_NPV.csv", row.names = FALSE)
+
+

@@ -1,4 +1,12 @@
+# Funciones adicionales -----
+# Ejecutar desde la raiz del proyecto:
+# source("cod/Funciones.R")
+# Utiliza funciones de dplyr y R base 
+# No modifica archivos de otros incisos.
 
+
+
+# Inciso A: ----
 
 # Función crea Matriz de transición:
 
@@ -11,7 +19,8 @@ matriz.transicion <- function(p, qr, qd) {
 }
 
 
-# Flujos, profit testing y Escenarios adversos ----
+#Inciso C,D, Adicional: Profit testing y Recursos ----
+
 #Funcion calcula At y devuelve su valor acumulado por el rendimiento al final del
 #año:
 
@@ -23,7 +32,6 @@ calcular.At.acum <- function(V.ini, prima, gasto, comision, rendimiento){
   
   return(At.acum)
 }
-
 
 
 #Función con párametros escenario base por defecto, devuelve una tabla

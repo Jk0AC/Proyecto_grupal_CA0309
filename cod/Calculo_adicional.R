@@ -21,7 +21,7 @@ recursos.adicional[[1]]
 
 # Matriz conparativa de aportes: ----
 
-matrix(c(recursos[4], recursos.adicional[4], 
+matriz.comp.aportes.ad <- matrix(c(recursos[4], recursos.adicional[4], 
          recursos[2], recursos.adicional[2], 
          recursos[3], recursos.adicional[3]), 
        ncol = 2, nrow = 3, byrow = T, 
@@ -43,7 +43,7 @@ tabla.NPV.adicional <- tabla.resultados.adicional %>%
 #Matriz NPV base contra adicional:
 
   
-matriz.comp.NPV <- matrix(c(resumen.NPV$NPV, tabla.NPV.adicional$NPV,
+matriz.comp.NPV.ad <- matrix(c(resumen.NPV$NPV, tabla.NPV.adicional$NPV,
                             resumen.NPV$Margen, tabla.NPV.adicional$Margen), 
                           nrow = 2, ncol = 2,
                           byrow = T, 
@@ -259,4 +259,11 @@ graf.comp.ad.aportes <- ggplot(datos.aportes,
 
 
 
+# Exportación: ----
 
+write.csv(tabla.resultados.adicional, "cod/Adicional_resultados/ AD1_tabla_resultados_ad", row.names = FALSE)
+write.csv(recursos.adicional[[1]], "cod/Adicional_resultados/ AD2_tabla_recursos_ad.csv", row.names = FALSE)
+write.csv(tabla.NPV.adicional, "cod/Adicional_resultados/ AD3_tabla_flujos_NPV_ad.csv", row.names = FALSE)
+write.csv(tabla.comp.adicional, "cod/Adicional_resultados/ AD4_tabla_comp_adicional.csv", row.names = FALSE)
+write.csv(matriz.comp.aportes.ad, "cod/Adicional_resultados/ AD5_matriz_comp_aportes_ad.csv", row.names = FALSE)
+write.csv(matriz.comp.NPV.ad, "cod/Adicional_resultados/ AD6_matriz_comp_NPV_ad.csv", row.names = FALSE)

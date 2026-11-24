@@ -115,12 +115,12 @@ stopifnot(all(verificaciones$resultado))
 # Exportación ----
 
 
-write.csv(cuadro.registros, "cod/Inciso_A/resultados/A1_cuadro_registros_N0.csv", row.names = FALSE)
-write.csv(traslapes,        "cod/Inciso_A/resultados/A2_traslapes.csv", row.names = FALSE)
-write.csv(cohortes,         "cod/Inciso_A/resultados/A3_poblacion_inicial_edad_sexo.csv", row.names = FALSE)
+write.csv(cuadro.registros, "cod/Inciso_A_resultados/A1_cuadro_registros_N0.csv", row.names = FALSE)
+write.csv(traslapes,        "cod/Inciso_A_resultados/A2_traslapes.csv", row.names = FALSE)
+write.csv(cohortes,         "cod/Inciso_A_resultados/A3_poblacion_inicial_edad_sexo.csv", row.names = FALSE)
 write.csv(proy %>% select(sexo, edad0, anio, edad, qd.sola, qr.sola, p, qd, qr,
                           act.ini, fallecen, renuncian, act.fin),
-          "cod/Inciso_A/resultados/A4_proyeccion_por_cohorte.csv", row.names = FALSE)
-write.csv(tabla.anual,      "cod/Inciso_A/resultados/A5_tabla_anual_por_causa.csv", row.names = FALSE)
-write.csv(verificaciones,   "cod/Inciso_A/resultados/A6_verificaciones.csv", row.names = FALSE)
+          "cod/Inciso_A_resultados/A4_proyeccion_por_cohorte.csv", row.names = FALSE)
+write.csv(tabla.anual,      "cod/Inciso_A_resultados/A5_tabla_anual_por_causa.csv", row.names = FALSE)
+write.csv(verificaciones,   "cod/Inciso_A_resultados/A6_verificaciones.csv", row.names = FALSE)
 

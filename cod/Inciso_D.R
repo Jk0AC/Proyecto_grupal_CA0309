@@ -19,7 +19,7 @@ recursos.adv <- calcular.recursos(F0, tabla.resultados.adv, j.alterno)
 
 #Matriz conparativa de aportes:
 
-matrix(c(recursos[4], recursos.adv[4], 
+matriz.comp.aportes.adv <- matrix(c(recursos[4], recursos.adv[4], 
          recursos[2], recursos.adv[2], 
          recursos[3], recursos.adv[3]), 
          ncol = 2, nrow = 3, byrow = T, 
@@ -41,7 +41,7 @@ tabla.NPV.adv <- tabla.resultados.adv %>%
 # Matriz NPV base contra adverso:
 
 
-matriz.comp.NPV <- matrix(c(resumen.NPV$NPV, tabla.NPV.adv$NPV,
+matriz.comp.NPV.adv <- matrix(c(resumen.NPV$NPV, tabla.NPV.adv$NPV,
                              resumen.NPV$Margen, tabla.NPV.adv$Margen), 
                           nrow = 2, ncol = 2,
                           byrow = T, 
@@ -78,7 +78,12 @@ tabla.comp.adv <- tibble(
   )))
 
 
+# Exportación: ----
 
-
-
+write.csv(tabla.resultados.adv, "cod/Inciso_D_resultados/ D1_tabla_resultados_adv", row.names = FALSE)
+write.csv(recursos.adv[[1]], "cod/Inciso_D_resultados/ D2_tabla_recursos_adv.csv", row.names = FALSE)
+write.csv(tabla.NPV.adv, "cod/Inciso_D_resultados/ D3_tabla_flujos_NPV_adv.csv", row.names = FALSE)
+write.csv(tabla.comp.escenarios, "cod/Inciso_D_resultados/ D4_tabla_comp_escenarios.csv", row.names = FALSE)
+write.csv(matriz.comp.aportes.adv, "cod/Inciso_D_resultados/ D5_matriz_comp_aportes_adv.csv", row.names = FALSE)
+write.csv(matriz.comp.NPV.adv, "cod/Inciso_D_resultados/ D6_matriz_comp_NPV_adv.csv", row.names = FALSE)
 

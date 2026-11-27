@@ -39,7 +39,6 @@ tabla.NPV.adicional <- tabla.resultados.adicional %>%
   summarise(NPV = - gasto.adquisicion*N0 + sum(VP.flujos),
             Margen = NPV/sum(VP.primas))
 
-
 #Matriz NPV base contra adicional:
 
   
@@ -67,10 +66,11 @@ names(tabla.comp.adicional) <- c("anio","Primas.Base", "Primas.Adicional",
 
 
 
-# Tabla imprimible:
+# Tabla imprimible: ----
 tibble(
   Escenario = c("Base", "Aumento Prima"),
   NPV = c(resumen.NPV$NPV, tabla.NPV.adicional$NPV) / 1e6,
+  Margen = c(resumen.NPV$Margen, tabla.NPV.adicional$Margen)*100,
   "Saldo mínimo $\\tilde{F}_t$" = c(recursos$saldo.minimo, recursos.adicional$saldo.minimo) /
     1e6 ,
   "Total de aportes" = c(recursos$aportes.totales, recursos.adicional$aportes.totales) /
@@ -82,7 +82,7 @@ tibble(
     round(x, 2), big.mark = ".", decimal.mark = ","
   )))
 
-recursos[[1]]
+
 
 
 

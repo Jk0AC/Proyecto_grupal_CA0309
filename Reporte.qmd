@@ -7,7 +7,6 @@ title-block-style: default
 author: |- 
    Jean Carlo Sanabria Martínez — C37241 \
    Universidad de Costa Rica, Escuela de Mátematica, Departamento de Ciencias Actuariales \
-   Ciudad Universitaria Rodrigo Facio, San Pedro de Montes de Oca, San José, Costa Rica \
    Profesor: Yerling Ramírez Morera \
    22 de agosto de 2026
     
@@ -345,33 +344,28 @@ El detalle anual de la trayectoria 1, las 1.000 observaciones de NPV y las verif
 
 **4. CSM, reserva y efectivo.** La **reserva suministrada** en C (por contrato vigente: 0, 40.000, 35.000, 25.000, 15.000 y 0 a lo largo de los cierres correspondientes) es un insumo técnico para el *profit testing*, **no** la CSM. El **efectivo disponible** se estudia aparte mediante recursos iniciales, rendimientos y posibles aportes para cubrir necesidades de liquidez. Liberar una reserva en un cálculo técnico no equivale a cobrar efectivo, un aporte de fondos no es utilidad y una CSM positiva no asegura liquidez. Por eso, rentabilidad, medición contable y suficiencia de recursos deben evaluarse por separado.
 
+```{=typst}
+#pagebreak()
+```
 
-# Cálculo adicional de la ronda 1
+# Evaluación del aumento de prima
 
-## 1:
+El incremento de la prima anual de 50 000 a 55 000 u.m. **mejora los indicadores económicos y financieros**. El **NPV** pasa de −12 912,86 a −10 772,98 MM u.m., el **margen** de −57,88 % a −43,90 %, el **saldo mínimo** antes de aportes de −1 591,75 a −468,03 MM u.m. y los **aportes totales disminuyen un 84,7 %**. Asimismo, la diferencia entre recursos y reservas del primer año mejora de −2 024,61 a −1 505,89 MM u.m.
 
-El incremento de la prima anual de 50 000 a 55 000 u.m. **mejora los indicadores económicos y financieros de la cartera**. El **NPV** aumenta de −12 912,86 a −10 772,98 MM u.m., el **margen** tambien mejora debido a que pasamos de *perder un 57.9%* de las primas cobradas a *perder 43,9%*, el **saldo mínimo** antes de aportes mejora de −1 591,75 a −468,03 MM u.m. y los **aportes totales** disminuyen aproximadamente un 84,7 %. Asimismo, la **diferencia entre recursos y reservas** del primer año mejora de −2 024,61 a −1 505,89 MM u.m.
+Dado que las comisiones representan el 5 % de las primas, el aumento de 5 000 u.m. por póliza eleva la comisión de 2 500 a 2 750 u.m., generando un **ingreso neto adicional de 4 750 u.m. por póliza**. Esto mejora los fondos acumulados y sus rendimientos al 5 %. En consecuencia, el resultado del tercer año aumenta de 25,50 a 504,11 MM u.m., mientras que los años 2, 4 y 5 pasan a resultados positivos. **El primer año continúa registrando pérdidas importantes** por los gastos de adquisición.
 
-Por otro lado, las comisiones se calculan como el 5 % de las primas. Por ello, **cuando aumenta la prima, también aumenta la comisión**. La prima por póliza percibe un aumento de 5000 u.m. por póliza cobrada, por lo tanto la comisión aumenta de 2500 a 2750 u.m. por póliza, eso nos da un **aumento del ingreso neto** a la entidad de 4750 u.m. por póliza. Este incremento neto explica la **mejora de los fondos acumulados** y de los **resultados anuales**. Además, los fondos adicionales generan rendimientos del 5 %, aumentando su contribución al resultado. Es especialmente visible en el tercer año, donde el resultado positivo aumenta de aproximadamente 25,50 a 504,11 MM u.m. También los años 2, 4 y 5 pasan de resultados negativos a positivos. El primer año sigue mostrando una pérdida considerable por el gasto de adquisición.
+## Limitaciones de mantener el supuesto de renuncia
 
+Mantener la renuncia del 3 % **supone que el aumento de prima no modifica el comportamiento de los asegurados**. Sin embargo, mayores renuncias reducirían las primas futuras, pero también los gastos y comisiones, además de modificar los beneficios esperados y las reservas. Por tanto, **el efecto neto sobre la rentabilidad y liquidez es incierto** y depende de las salidas adicionales y sus flujos asociados.
 
-## 2:
+## Recomendación: Adoptar la medida de manera condicionada
 
-El aumento de prima representa una **mejora sustancial**, principalmente en los recursos, pero es **insuficiente** para recomendar su **adopción incondicional**. El ajuste no resuelve completamente los problemas de la cartera, pues el **NPV permanece negativo**, todavía se **requieren aportes** en el quinto año y los **recursos del primer año** siguen siendo **inferiores a la reserva suministrada**. El aumento es favorable desde una perspectiva comparativa, pero no garantiza la rentabilidad económica ni la cobertura de reservas. Tampoco constituye, por sí mismo, una demostración de suficiencia actuarial o solvencia regulatoria.
+El aumento de prima **mejora los recursos, reduce los aportes y eleva el NPV**, por lo que constituye una alternativa favorable. Sin embargo, **el NPV continúa siendo negativo** y existe incertidumbre sobre el comportamiento de las renuncias, lo que impide recomendar su adopción incondicional.
 
-## 3:
+Antes de implementarlo, se recomienda **evaluar la sensibilidad de las renuncias ante cambios de prima**, mediante encuestas o registros históricos comparables, y **simular escenarios adversos** para cuantificar sus posibles impactos financieros.
 
-La principal limitación de mantener la renuncia del caso base es que se **asume ímplicitamente que los asegurados no modifican su comportamiento** ante el incremento de la prima. Cuando en un escenario realista el incremento de prima podría producir los siguientes efectos: **menores ingresos por primas**, una reducción del número de contratos disminuye las primas futuras; **menores gastos y comisiones** asociadas a los contratos que dejan de estar vigentes; **modificación de beneficios y reservas**, una menor población asegurada alteraría los beneficios esperados por fallecimiento y las reservas totales y **cambios en la rentabilidad y liquidez**, el efecto neto dependería de la magnitud de las renuncias y de los flujos asociados a los contratos que se pierden.
+Posteriormente, se propone **aplicar el ajuste en grupos de asegurados con características similares**, manteniendo **criterios tarifarios uniformes para contratos equivalentes**. Se deberá **monitorear la renuncia observada frente al 3 % supuesto** y actualizar periódicamente las proyecciones de rentabilidad, recursos, NPV y aportes requeridos, para comprobar la efectividad del ajuste sin introducir diferencias tarifarias injustificadas.
 
-## 4:
-
-## Recomendación: adoptar el ajuste de manera condicionada.
-
-El aumento de prima muestra beneficios importantes, especialmente en la **mejora de recursos**, **reducción de aportes** y **mejora del NPV**. Por ello, no se consideró descartable. Sin embargo, la **persistencia de un NPV negativo** e **incertidumbre** sobre las renuncias justifican condicionar su implementación.
-
-En primer lugar se recomienda antes de adoptar el ajuste **evaluar previamente la sensibilidad** de la cartera ante cambios en primas, mediante encuestas o información histórica comparable sobre casos reales de aumentos tarifarios y renuncias. Además de **proyectar escenarios catastófricos** y cuantificar impactos negativos.
-
-Posteriormente una vez evaluado el riesgo de sensibilidad, se propone **adoptar el ajuste de manera condicionada en grupos similares**, garantizando **criterios tarifarios uniformes** para contratos de características equivalentes. Como **indicador de seguimiento**, se propone **monitorear la tasa de renuncia** observada frente al 3 % supuesto, **actualizando las proyecciones** de rentabilidad y recursos ante desviaciones relevantes. Esto permitiría evaluar la efectividad del aumento sin introducir diferencias tarifarias injustificadas. Como seguimiento complementario, se sugiere **recalcular periódicamente el NPV y los aportes** requeridos con la experiencia real, para verificar que la mejora esperada se materialice.
 
 
 # Anexos
